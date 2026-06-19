@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import { AnimatedSection } from "./AnimatedSection";
 
@@ -5,68 +8,177 @@ const WA_MSG = encodeURIComponent(
   "Hola, me interesa el piso de Calle Doctor Iranzo 52, 2.º (Las Fuentes, Zaragoza). ¿Podéis enviarme más información?"
 );
 
+const DEFAULT_MSG =
+  "Hola, me interesa el piso de Calle Doctor Iranzo 52, 2.º (Las Fuentes, Zaragoza). Por favor, contáctame.";
+
+type Status = "idle" | "sending" | "sent" | "error";
+
+const inputClass =
+  "w-full px-4 py-3 rounded-xl border border-zinc-200 text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-[#EF3340]/20 focus:border-[#EF3340] transition-all duration-150";
+
 export function Contacto() {
+  const [fields, setFields] = useState({
+    nombre: "",
+    telefono: "",
+    email: "",
+    mensaje: DEFAULT_MSG,
+  });
+  const [status, setStatus] = useState<Status>("idle");
+
+  const set =
+    (k: keyof typeof fields) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+      setFields((f) => ({ ...f, [k]: e.target.value }));
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus("sending");
+    try {
+      const res = await fetch("/api/contacto", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(fields),
+      });
+      setStatus(res.ok ? "sent" : "error");
+    } catch {
+      setStatus("error");
+    }
+  };
+
   return (
-    <section id="contacto" className="py-24 bg-zinc-950">
+    <section id="contacto" className="py-24 bg-zinc-950 relative">
       <div className="absolute inset-0 pointer-events-none" aria-hidden>
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_100%,rgba(239,51,64,0.07),transparent)]" />
       </div>
 
-      <div className="relative max-w-2xl mx-auto px-4 sm:px-6 text-center">
-        <AnimatedSection>
-          <p className="text-[10px] font-semibold text-[#EF3340] tracking-[0.3em] uppercase mb-4">
-            Contactar
-          </p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-4 leading-tight">
-            Solicita información sobre<br />
-            <span className="text-gradient">Doctor Iranzo 52</span>
-          </h2>
-          <p className="text-zinc-400 text-base leading-relaxed mb-10">
-            El inmueble está actualmente ocupado. Contacta con nuestro equipo para
-            recibir la documentación completa, acceder al tour virtual 360° o
-            coordinar una visita presencial.
-          </p>
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid lg:grid-cols-2 gap-16 items-start">
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-6">
-            <Link
-              href={`https://wa.me/34648261617?text=${WA_MSG}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-lg bg-[#25D366] hover:bg-[#1fb856] text-white font-semibold text-sm transition-all duration-200 hover:shadow-xl hover:shadow-[#25D366]/20 hover:-translate-y-0.5"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
-                <path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.556 4.121 1.527 5.855L.057 23.882l6.196-1.624A11.937 11.937 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.007-1.375l-.36-.213-3.676.964.98-3.584-.233-.373A9.818 9.818 0 012.182 12C2.182 6.554 6.554 2.182 12 2.182S21.818 6.554 21.818 12 17.446 21.818 12 21.818z" />
-              </svg>
-              WhatsApp · 648 261 617
-            </Link>
-            <Link
-              href="tel:876645518"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg border border-zinc-700 hover:border-zinc-500 text-zinc-300 hover:text-white font-semibold text-sm transition-all duration-200 hover:-translate-y-0.5"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 .84h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" />
-              </svg>
-              Llamar · 876 645 518
-            </Link>
-          </div>
-
-          <Link
-            href="mailto:info@adrianbotiza.es?subject=Información%20Doctor%20Iranzo%2052"
-            className="inline-flex items-center gap-1.5 text-zinc-500 hover:text-zinc-300 text-sm transition-colors"
-          >
-            info@adrianbotiza.es
-            <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
-              <path d="M2.5 7h9M7.5 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </Link>
-
-          <div className="mt-10 pt-8 border-t border-zinc-800">
-            <p className="text-zinc-600 text-xs">
-              Adrián Botiza Inmobiliaria · Paseo de los Olvidados 49 · 50019 Zaragoza
+          {/* Left: info + CTAs */}
+          <AnimatedSection>
+            <p className="text-[10px] font-semibold text-[#EF3340] tracking-[0.3em] uppercase mb-4">
+              Contactar
             </p>
-          </div>
-        </AnimatedSection>
+            <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-4 leading-tight">
+              Solicita información sobre<br />
+              <span className="text-gradient">Doctor Iranzo 52</span>
+            </h2>
+            <p className="text-zinc-400 text-base leading-relaxed mb-10">
+              El inmueble está actualmente ocupado. Contacta con nuestro equipo
+              para recibir la documentación completa, acceder al tour virtual
+              360° o coordinar una visita presencial.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-3 mb-8">
+              <Link
+                href={`https://wa.me/34648261617?text=${WA_MSG}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-lg bg-[#25D366] hover:bg-[#1fb856] text-white font-semibold text-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-[#25D366]/20"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                  <path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.556 4.121 1.527 5.855L.057 23.882l6.196-1.624A11.937 11.937 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.007-1.375l-.36-.213-3.676.964.98-3.584-.233-.373A9.818 9.818 0 012.182 12C2.182 6.554 6.554 2.182 12 2.182S21.818 6.554 21.818 12 17.446 21.818 12 21.818z" />
+                </svg>
+                WhatsApp · 648 261 617
+              </Link>
+              <Link
+                href="tel:876645518"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg border border-zinc-700 hover:border-zinc-500 text-zinc-300 hover:text-white font-semibold text-sm transition-all duration-200 hover:-translate-y-0.5"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 .84h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" />
+                </svg>
+                Llamar · 876 645 518
+              </Link>
+            </div>
+
+            <Link
+              href="mailto:info@adrianbotiza.es?subject=Información%20Doctor%20Iranzo%2052"
+              className="inline-flex items-center gap-1.5 text-zinc-500 hover:text-zinc-300 text-sm transition-colors"
+            >
+              info@adrianbotiza.es
+              <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+                <path d="M2.5 7h9M7.5 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </Link>
+
+            <div className="mt-10 pt-8 border-t border-zinc-800">
+              <p className="text-zinc-600 text-xs">
+                Adrián Botiza Inmobiliaria · Paseo de los Olvidados 49 · 50019 Zaragoza
+              </p>
+            </div>
+          </AnimatedSection>
+
+          {/* Right: form card */}
+          <AnimatedSection direction="left">
+            <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-2xl shadow-black/50">
+              {status === "sent" ? (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <div className="w-14 h-14 rounded-full bg-[#EF3340]/10 flex items-center justify-center mb-4">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#EF3340" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  </div>
+                  <h3 className="text-zinc-900 font-bold text-lg mb-2">¡Mensaje enviado!</h3>
+                  <p className="text-zinc-500 text-sm">Te contactamos en menos de 24 horas.</p>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-3">
+                  <input
+                    type="text"
+                    placeholder="Nombre"
+                    required
+                    value={fields.nombre}
+                    onChange={set("nombre")}
+                    className={inputClass}
+                  />
+                  <input
+                    type="tel"
+                    placeholder="Teléfono"
+                    value={fields.telefono}
+                    onChange={set("telefono")}
+                    className={inputClass}
+                  />
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    value={fields.email}
+                    onChange={set("email")}
+                    className={inputClass}
+                  />
+                  <textarea
+                    rows={4}
+                    placeholder="Mensaje"
+                    required
+                    value={fields.mensaje}
+                    onChange={set("mensaje")}
+                    className={`${inputClass} resize-none`}
+                  />
+
+                  {status === "error" && (
+                    <p className="text-[#EF3340] text-xs">
+                      Ha ocurrido un error. Llámanos al 876 645 518.
+                    </p>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={status === "sending"}
+                    className="w-full py-3.5 rounded-xl bg-[#EF3340] hover:bg-[#d42b38] text-white font-semibold text-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#EF3340]/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+                  >
+                    {status === "sending" ? "Enviando…" : "Enviar"}
+                  </button>
+
+                  <p className="text-zinc-400 text-[11px] text-center leading-relaxed pt-1">
+                    Tu información se usa exclusivamente para contactarte sobre esta propiedad.
+                  </p>
+                </form>
+              )}
+            </div>
+          </AnimatedSection>
+
+        </div>
       </div>
     </section>
   );
