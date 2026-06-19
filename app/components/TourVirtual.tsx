@@ -9,7 +9,7 @@ export function TourVirtual() {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <AnimatedSection className="mb-12">
-          <p className="text-[10px] font-semibold text-[#53565A] tracking-[0.3em] uppercase mb-4">
+          <p className="text-[10px] font-semibold text-[#EF3340] tracking-[0.3em] uppercase mb-4">
             Exploración Virtual
           </p>
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">

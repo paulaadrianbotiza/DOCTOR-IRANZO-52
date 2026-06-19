@@ -57,7 +57,7 @@ export function Navbar() {
                 key={link.href}
                 href={link.href}
                 className={`text-xs font-medium transition-colors duration-150 ${
-                  scrolled ? "text-zinc-500 hover:text-zinc-900" : "text-white/60 hover:text-white"
+                  scrolled ? "text-zinc-500 hover:text-[#EF3340]" : "text-white/60 hover:text-white"
                 }`}
               >
                 {link.label}

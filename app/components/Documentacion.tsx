@@ -63,7 +63,7 @@ export function Documentacion() {
     <section id="documentacion" className="py-24 bg-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <AnimatedSection className="mb-12">
-          <p className="text-[10px] font-semibold text-[#53565A] tracking-[0.3em] uppercase mb-4">
+          <p className="text-[10px] font-semibold text-[#EF3340] tracking-[0.3em] uppercase mb-4">
             Documentación
           </p>
           <h2 className="text-3xl sm:text-4xl font-bold text-zinc-900 tracking-tight mb-4">

@@ -18,7 +18,7 @@ export function Specs() {
 
         {/* Header */}
         <AnimatedSection className="mb-10">
-          <p className="text-[10px] font-semibold text-[#53565A] tracking-[0.3em] uppercase mb-4">
+          <p className="text-[10px] font-semibold text-[#EF3340] tracking-[0.3em] uppercase mb-4">
             Ficha del inmueble · Ref. V-005-002
           </p>
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">

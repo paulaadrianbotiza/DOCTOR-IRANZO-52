@@ -14,7 +14,7 @@ export function Contacto() {
 
       <div className="relative max-w-2xl mx-auto px-4 sm:px-6 text-center">
         <AnimatedSection>
-          <p className="text-[10px] font-semibold text-[#53565A] tracking-[0.3em] uppercase mb-4">
+          <p className="text-[10px] font-semibold text-[#EF3340] tracking-[0.3em] uppercase mb-4">
             Contactar
           </p>
           <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-4 leading-tight">

@@ -17,7 +17,7 @@ export function Entorno() {
 
         {/* Header */}
         <AnimatedSection className="mb-14">
-          <p className="text-[10px] font-semibold text-[#53565A] tracking-[0.3em] uppercase mb-4">
+          <p className="text-[10px] font-semibold text-[#EF3340] tracking-[0.3em] uppercase mb-4">
             El Barrio · Las Fuentes · Zaragoza
           </p>
           <h2 className="text-3xl sm:text-4xl font-bold text-zinc-900 tracking-tight leading-tight">

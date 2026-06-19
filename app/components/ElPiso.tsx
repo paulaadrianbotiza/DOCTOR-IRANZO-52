@@ -27,7 +27,7 @@ export function ElPiso() {
 
           {/* Left: text */}
           <AnimatedSection>
-            <p className="text-[10px] font-semibold text-[#53565A] tracking-[0.3em] uppercase mb-4">
+            <p className="text-[10px] font-semibold text-[#EF3340] tracking-[0.3em] uppercase mb-4">
               El Piso
             </p>
             <h2 className="text-3xl sm:text-4xl font-bold text-zinc-900 tracking-tight mb-6 leading-tight">

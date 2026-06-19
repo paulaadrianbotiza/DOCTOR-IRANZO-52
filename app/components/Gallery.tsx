@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import { AnimatedSection } from "./AnimatedSection";
 
@@ -32,52 +32,52 @@ const categories: { label: string; photos: Omit<Photo, "catLabel">[] }[] = [
   {
     label: "Exterior",
     photos: [
-      { src: "/EXTERIOR/DSC_0326.jpg", alt: "Exterior · Las Fuentes" },
-      { src: "/EXTERIOR/Las%20Fuentes%20Aguadoras%20(1).jpg", alt: "Plaza Aguadoras · Las Fuentes" },
-      { src: "/EXTERIOR/Las%20Fuentes%20Aguadoras%20(2).jpg", alt: "Plaza Aguadoras · Las Fuentes" },
-      { src: "/EXTERIOR/Las%20Fuentes%20Aguadoras%20(3).jpg", alt: "Las Fuentes · Zaragoza" },
-      { src: "/EXTERIOR/Parque%20Bruil%20(7).jpg", alt: "Parque Bruil · Zaragoza" },
-      { src: "/EXTERIOR/Parque%20Bruil%20(8).jpg", alt: "Parque Bruil · Zaragoza" },
-      { src: "/EXTERIOR/Parque%20Bruil%20(10).jpg", alt: "Parque Bruil · Zaragoza" },
-      { src: "/EXTERIOR/Parque%20Bruil%20(11).jpg", alt: "Parque Bruil · Zaragoza" },
-      { src: "/EXTERIOR/Parque%20Bruil%20(12).jpg", alt: "Parque Bruil · Zaragoza" },
-      { src: "/EXTERIOR/Parque%20Bruil%20(13).jpg", alt: "Parque Bruil · Zaragoza" },
-      { src: "/EXTERIOR/Parque%20Bruil%20(14).jpg", alt: "Parque Bruil · Zaragoza" },
-      { src: "/EXTERIOR/Parque%20Bruil%20(15).jpg", alt: "Parque Bruil · Zaragoza" },
-      { src: "/EXTERIOR/Parque%20Bruil%20(16).jpg", alt: "Parque Bruil · Zaragoza" },
-      { src: "/EXTERIOR/Parque%20Bruil%20(17).jpg", alt: "Parque Bruil · Zaragoza" },
-      { src: "/EXTERIOR/Parque%20Torre%20Ramona%20(1).jpg", alt: "Parque Torre Ramona · Zaragoza" },
-      { src: "/EXTERIOR/Parque%20Torre%20Ramona%20(2).jpg", alt: "Parque Torre Ramona · Zaragoza" },
-      { src: "/EXTERIOR/Parque%20Torre%20Ramona%20(3).jpg", alt: "Parque Torre Ramona · Zaragoza" },
-      { src: "/EXTERIOR/Parque%20Torre%20Ramona%20(4).jpg", alt: "Parque Torre Ramona · Zaragoza" },
-      { src: "/EXTERIOR/Parque%20Torre%20Ramona%20(5).jpg", alt: "Parque Torre Ramona · Zaragoza" },
-      { src: "/EXTERIOR/Parque%20Torre%20Ramona%20(6).jpg", alt: "Parque Torre Ramona · Zaragoza" },
-      { src: "/EXTERIOR/Parque%20Torre%20Ramona%20(7).jpg", alt: "Parque Torre Ramona · Zaragoza" },
+      { src: "/EXTERIOR/DSC_0326.jpg",                         alt: "Exterior · Las Fuentes" },
+      { src: "/EXTERIOR/Las%20Fuentes%20Aguadoras%20(1).jpg",  alt: "Plaza Aguadoras · Las Fuentes" },
+      { src: "/EXTERIOR/Las%20Fuentes%20Aguadoras%20(2).jpg",  alt: "Plaza Aguadoras · Las Fuentes" },
+      { src: "/EXTERIOR/Las%20Fuentes%20Aguadoras%20(3).jpg",  alt: "Las Fuentes · Zaragoza" },
+      { src: "/EXTERIOR/Parque%20Bruil%20(7).jpg",             alt: "Parque Bruil · Zaragoza" },
+      { src: "/EXTERIOR/Parque%20Bruil%20(8).jpg",             alt: "Parque Bruil · Zaragoza" },
+      { src: "/EXTERIOR/Parque%20Bruil%20(10).jpg",            alt: "Parque Bruil · Zaragoza" },
+      { src: "/EXTERIOR/Parque%20Bruil%20(11).jpg",            alt: "Parque Bruil · Zaragoza" },
+      { src: "/EXTERIOR/Parque%20Bruil%20(12).jpg",            alt: "Parque Bruil · Zaragoza" },
+      { src: "/EXTERIOR/Parque%20Bruil%20(13).jpg",            alt: "Parque Bruil · Zaragoza" },
+      { src: "/EXTERIOR/Parque%20Bruil%20(14).jpg",            alt: "Parque Bruil · Zaragoza" },
+      { src: "/EXTERIOR/Parque%20Bruil%20(15).jpg",            alt: "Parque Bruil · Zaragoza" },
+      { src: "/EXTERIOR/Parque%20Bruil%20(16).jpg",            alt: "Parque Bruil · Zaragoza" },
+      { src: "/EXTERIOR/Parque%20Bruil%20(17).jpg",            alt: "Parque Bruil · Zaragoza" },
+      { src: "/EXTERIOR/Parque%20Torre%20Ramona%20(1).jpg",    alt: "Parque Torre Ramona · Zaragoza" },
+      { src: "/EXTERIOR/Parque%20Torre%20Ramona%20(2).jpg",    alt: "Parque Torre Ramona · Zaragoza" },
+      { src: "/EXTERIOR/Parque%20Torre%20Ramona%20(3).jpg",    alt: "Parque Torre Ramona · Zaragoza" },
+      { src: "/EXTERIOR/Parque%20Torre%20Ramona%20(4).jpg",    alt: "Parque Torre Ramona · Zaragoza" },
+      { src: "/EXTERIOR/Parque%20Torre%20Ramona%20(5).jpg",    alt: "Parque Torre Ramona · Zaragoza" },
+      { src: "/EXTERIOR/Parque%20Torre%20Ramona%20(6).jpg",    alt: "Parque Torre Ramona · Zaragoza" },
+      { src: "/EXTERIOR/Parque%20Torre%20Ramona%20(7).jpg",    alt: "Parque Torre Ramona · Zaragoza" },
     ],
   },
   {
     label: "Comunidad",
     photos: [
-      { src: "/COMUNIDAD/DSC_0296.jpg", alt: "Zonas comunes · Doctor Iranzo 52" },
-      { src: "/COMUNIDAD/DSC_0297.jpg", alt: "Zonas comunes · Doctor Iranzo 52" },
+      { src: "/COMUNIDAD/DSC_0296.jpg",     alt: "Zonas comunes · Doctor Iranzo 52" },
+      { src: "/COMUNIDAD/DSC_0297.jpg",     alt: "Zonas comunes · Doctor Iranzo 52" },
       { src: "/COMUNIDAD/DSC_0316-HDR.jpg", alt: "Zonas comunes · Doctor Iranzo 52" },
-      { src: "/COMUNIDAD/DSC_0317.jpg", alt: "Zonas comunes · Doctor Iranzo 52" },
-      { src: "/COMUNIDAD/DSC_0322.jpg", alt: "Zonas comunes · Doctor Iranzo 52" },
+      { src: "/COMUNIDAD/DSC_0317.jpg",     alt: "Zonas comunes · Doctor Iranzo 52" },
+      { src: "/COMUNIDAD/DSC_0322.jpg",     alt: "Zonas comunes · Doctor Iranzo 52" },
     ],
   },
 ];
 
-// Flat list with category label for lightbox
 const allPhotos: Photo[] = categories.flatMap((cat) =>
   cat.photos.map((p) => ({ ...p, catLabel: cat.label }))
 );
 
-// Map (catIdx, photoIdx) → global index
 const globalStart = categories.map((_, i) =>
   categories.slice(0, i).reduce((acc, c) => acc + c.photos.length, 0)
 );
 
-// ── Per-category carousel ─────────────────────────────────────────────────────
+const FADE_MS = 420;
+
+// ── Crossfade carousel ────────────────────────────────────────────────────────
 
 function Carousel({
   cat,
@@ -88,16 +88,36 @@ function Carousel({
   catIdx: number;
   onOpen: (globalIdx: number) => void;
 }) {
-  const [idx, setIdx] = useState(0);
+  const [curIdx, setCurIdx] = useState(0);
+  const [nxtIdx, setNxtIdx] = useState<number | null>(null);
   const [touchX, setTouchX] = useState<number | null>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // The "visible" index for UI purposes (counter, dots, lightbox)
+  const displayIdx = nxtIdx !== null ? nxtIdx : curIdx;
+
+  const goTo = useCallback(
+    (newIdx: number) => {
+      if (nxtIdx !== null || newIdx === curIdx) return;
+      setNxtIdx(newIdx);
+      if (timerRef.current) clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(() => {
+        setCurIdx(newIdx);
+        setNxtIdx(null);
+      }, FADE_MS);
+    },
+    [curIdx, nxtIdx]
+  );
+
+  useEffect(() => () => { if (timerRef.current) clearTimeout(timerRef.current); }, []);
 
   const prev = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIdx((i) => (i - 1 + cat.photos.length) % cat.photos.length);
+    goTo((curIdx - 1 + cat.photos.length) % cat.photos.length);
   };
   const next = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIdx((i) => (i + 1) % cat.photos.length);
+    goTo((curIdx + 1) % cat.photos.length);
   };
 
   return (
@@ -108,63 +128,77 @@ function Carousel({
           {cat.label}
         </h3>
         <span className="text-xs text-zinc-400 tabular-nums">
-          {idx + 1} / {cat.photos.length}
+          {displayIdx + 1} / {cat.photos.length}
         </span>
       </div>
 
-      {/* Carousel frame */}
+      {/* Frame */}
       <div
         className="relative aspect-[4/3] rounded-xl overflow-hidden bg-zinc-100 cursor-zoom-in select-none"
-        onClick={() => onOpen(globalStart[catIdx] + idx)}
+        onClick={() => onOpen(globalStart[catIdx] + displayIdx)}
         onTouchStart={(e) => setTouchX(e.touches[0].clientX)}
         onTouchEnd={(e) => {
           if (touchX === null) return;
           const d = touchX - e.changedTouches[0].clientX;
           if (Math.abs(d) > 40)
-            setIdx((i) =>
+            goTo(
               d > 0
-                ? (i + 1) % cat.photos.length
-                : (i - 1 + cat.photos.length) % cat.photos.length
+                ? (curIdx + 1) % cat.photos.length
+                : (curIdx - 1 + cat.photos.length) % cat.photos.length
             );
           setTouchX(null);
         }}
       >
-        {/* Sliding strip */}
+        {/* Layer 1 – current image fading out */}
         <div
-          className="flex h-full transition-transform duration-300 ease-in-out"
-          style={{ transform: `translateX(-${idx * 100}%)` }}
+          className="absolute inset-0"
+          style={{
+            opacity: nxtIdx !== null ? 0 : 1,
+            transition: `opacity ${FADE_MS}ms ease-in-out`,
+          }}
         >
-          {cat.photos.map((photo, i) => (
-            <div key={photo.src} className="relative flex-shrink-0 w-full h-full">
-              <Image
-                src={photo.src}
-                alt={photo.alt}
-                fill
-                className="object-cover"
-                priority={i === 0 && catIdx === 0}
-                quality={80}
-                sizes="(max-width: 768px) 90vw, 30vw"
-              />
-            </div>
-          ))}
+          <Image
+            src={cat.photos[curIdx].src}
+            alt={cat.photos[curIdx].alt}
+            fill
+            className="object-cover"
+            priority={curIdx === 0 && catIdx === 0}
+            quality={80}
+            sizes="(max-width: 768px) 90vw, 30vw"
+          />
         </div>
 
-        {/* Prev */}
+        {/* Layer 2 – next image fading in */}
+        {nxtIdx !== null && (
+          <div
+            className="absolute inset-0"
+            style={{ animation: `fade-in ${FADE_MS}ms ease-in-out both` }}
+          >
+            <Image
+              src={cat.photos[nxtIdx].src}
+              alt={cat.photos[nxtIdx].alt}
+              fill
+              className="object-cover"
+              quality={80}
+              sizes="(max-width: 768px) 90vw, 30vw"
+            />
+          </div>
+        )}
+
+        {/* Controls – always above image layers */}
         <button
           onClick={prev}
           aria-label="Anterior"
-          className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/40 hover:bg-black/65 text-white flex items-center justify-center transition-colors backdrop-blur-sm"
+          className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/40 hover:bg-black/65 text-white flex items-center justify-center transition-colors backdrop-blur-sm"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M15 18l-6-6 6-6" />
           </svg>
         </button>
-
-        {/* Next */}
         <button
           onClick={next}
           aria-label="Siguiente"
-          className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/40 hover:bg-black/65 text-white flex items-center justify-center transition-colors backdrop-blur-sm"
+          className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/40 hover:bg-black/65 text-white flex items-center justify-center transition-colors backdrop-blur-sm"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M9 18l6-6-6-6" />
@@ -172,20 +206,20 @@ function Carousel({
         </button>
 
         {/* Expand hint */}
-        <div className="absolute top-2 right-2 w-7 h-7 rounded-md bg-black/30 backdrop-blur-sm flex items-center justify-center text-white/60 pointer-events-none">
+        <div className="absolute top-2 right-2 z-10 w-7 h-7 rounded-md bg-black/30 backdrop-blur-sm flex items-center justify-center text-white/60 pointer-events-none">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
           </svg>
         </div>
 
-        {/* Dot indicators (max 7 shown) */}
+        {/* Dot indicators */}
         {cat.photos.length <= 12 && (
-          <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1 pointer-events-none">
+          <div className="absolute bottom-2 left-0 right-0 z-10 flex justify-center gap-1 pointer-events-none">
             {cat.photos.map((_, i) => (
               <span
                 key={i}
-                className={`block rounded-full transition-all duration-200 ${
-                  i === idx
+                className={`block rounded-full transition-all duration-300 ${
+                  i === displayIdx
                     ? "w-4 h-1.5 bg-white"
                     : "w-1.5 h-1.5 bg-white/40"
                 }`}
@@ -198,14 +232,13 @@ function Carousel({
   );
 }
 
-// ── Main Gallery + Lightbox ───────────────────────────────────────────────────
+// ── Gallery section + Lightbox ────────────────────────────────────────────────
 
 export function Gallery() {
   const [lbIdx, setLbIdx] = useState<number | null>(null);
   const [touchX, setTouchX] = useState<number | null>(null);
 
   const close = useCallback(() => setLbIdx(null), []);
-
   const goNext = useCallback(
     () => setLbIdx((i) => (i === null ? null : (i + 1) % allPhotos.length)),
     []
@@ -238,7 +271,7 @@ export function Gallery() {
       <section id="galeria" className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatedSection className="mb-12">
-            <p className="text-[10px] font-semibold text-[#53565A] tracking-[0.3em] uppercase mb-4">
+            <p className="text-[10px] font-semibold text-[#EF3340] tracking-[0.3em] uppercase mb-4">
               Galería
             </p>
             <h2 className="text-3xl sm:text-4xl font-bold text-zinc-900 tracking-tight">
@@ -256,7 +289,7 @@ export function Gallery() {
         </div>
       </section>
 
-      {/* ── Lightbox ─────────────────────────────────────────────────────── */}
+      {/* Lightbox */}
       {lbIdx !== null && current && (
         <div
           className="fixed inset-0 z-50 bg-black/95 flex items-center"
@@ -269,7 +302,6 @@ export function Gallery() {
             setTouchX(null);
           }}
         >
-          {/* Info */}
           <div className="absolute top-4 left-4 z-10 flex items-center gap-3 pointer-events-none">
             <span className="text-white/40 text-xs font-semibold uppercase tracking-widest">
               {current.catLabel}
@@ -279,7 +311,6 @@ export function Gallery() {
             </span>
           </div>
 
-          {/* Close */}
           <button
             onClick={close}
             aria-label="Cerrar"
@@ -290,7 +321,6 @@ export function Gallery() {
             </svg>
           </button>
 
-          {/* Prev */}
           <button
             onClick={(e) => { e.stopPropagation(); goPrev(); }}
             aria-label="Anterior"
@@ -301,21 +331,22 @@ export function Gallery() {
             </svg>
           </button>
 
-          {/* Image */}
+          {/* Image with fade-in on each change */}
           <div
             className="w-full h-full flex items-center justify-center px-20 sm:px-24 py-16"
             onClick={(e) => e.stopPropagation()}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
+              key={lbIdx}
               src={current.src}
               alt={current.alt}
               className="max-w-full max-h-full object-contain rounded-xl select-none"
+              style={{ animation: "fade-in 250ms ease-out both" }}
               draggable={false}
             />
           </div>
 
-          {/* Next */}
           <button
             onClick={(e) => { e.stopPropagation(); goNext(); }}
             aria-label="Siguiente"
