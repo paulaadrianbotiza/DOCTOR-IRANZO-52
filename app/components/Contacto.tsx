@@ -30,19 +30,21 @@ export function Contacto() {
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
       setFields((f) => ({ ...f, [k]: e.target.value }));
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setStatus("sending");
-    try {
-      const res = await fetch("/api/contacto", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(fields),
-      });
-      setStatus(res.ok ? "sent" : "error");
-    } catch {
-      setStatus("error");
-    }
+    const lines = [
+      `*Nueva consulta · Doctor Iranzo 52*`,
+      ``,
+      `*Nombre:* ${fields.nombre}`,
+      fields.telefono && `*Teléfono:* ${fields.telefono}`,
+      fields.email && `*Email:* ${fields.email}`,
+      ``,
+      `*Mensaje:*`,
+      fields.mensaje,
+    ].filter(Boolean).join("\n");
+
+    window.open(`https://wa.me/34648261617?text=${encodeURIComponent(lines)}`, "_blank");
+    setStatus("sent");
   };
 
   return (
@@ -120,8 +122,8 @@ export function Contacto() {
                       <polyline points="20 6 9 17 4 12" />
                     </svg>
                   </div>
-                  <h3 className="text-zinc-900 font-bold text-lg mb-2">¡Mensaje enviado!</h3>
-                  <p className="text-zinc-500 text-sm">Te contactamos en menos de 24 horas.</p>
+                  <h3 className="text-zinc-900 font-bold text-lg mb-2">¡Abriendo WhatsApp!</h3>
+                  <p className="text-zinc-500 text-sm">Completa el envío desde la app para que lo recibamos.</p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-3">
