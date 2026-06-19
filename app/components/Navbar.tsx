@@ -3,12 +3,12 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 
 const links = [
-  { href: "#elpiso", label: "El Piso" },
-  { href: "#tour", label: "Tour 360°" },
-  { href: "#galeria", label: "Galería" },
-  { href: "#documentacion", label: "Documentación" },
-  { href: "#ubicacion", label: "El Barrio" },
-  { href: "#contacto", label: "Contactar" },
+  { href: "#elpiso",        label: "El Piso",        id: "elpiso" },
+  { href: "#tour",          label: "Tour 360°",       id: "tour" },
+  { href: "#galeria",       label: "Galería",         id: "galeria" },
+  { href: "#documentacion", label: "Documentación",   id: "documentacion" },
+  { href: "#ubicacion",     label: "El Barrio",       id: "ubicacion" },
+  { href: "#contacto",      label: "Contactar",       id: "contacto" },
 ];
 
 const WA_MSG = encodeURIComponent(
@@ -18,12 +18,41 @@ const WA_MSG = encodeURIComponent(
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [activeId, setActiveId] = useState("");
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 20);
+
+      // Progress bar
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(total > 0 ? (y / total) * 100 : 0);
+
+      // Active section: last section whose top is above the navbar
+      const OFFSET = 90;
+      if (y < 60) {
+        setActiveId("");
+        return;
+      }
+      let found = "";
+      links.forEach(({ id }) => {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= OFFSET) found = id;
+      });
+      setActiveId(found);
+    };
+
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  const scrollTop = (e: React.MouseEvent) => {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setMobileOpen(false);
+  };
 
   return (
     <nav
@@ -35,9 +64,10 @@ export function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group flex-shrink-0">
-            <div className="w-7 h-7 rounded-lg bg-[#EF3340] flex items-center justify-center shadow-lg shadow-[#EF3340]/20">
+
+          {/* Logo → scroll to top */}
+          <a href="#" onClick={scrollTop} className="flex items-center gap-2.5 group flex-shrink-0">
+            <div className="w-7 h-7 rounded-lg bg-[#EF3340] flex items-center justify-center shadow-lg shadow-[#EF3340]/20 transition-transform duration-200 group-hover:scale-110">
               <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M2 8L8 2L14 8V14H10V10H6V14H2V8Z" />
               </svg>
@@ -48,21 +78,34 @@ export function Navbar() {
               </span>
               <span className="text-[#53565A] text-[10px] tracking-widest uppercase">Inmobiliaria</span>
             </div>
-          </Link>
+          </a>
 
           {/* Desktop nav */}
           <div className="hidden lg:flex items-center gap-6">
-            {links.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`text-xs font-medium transition-colors duration-150 ${
-                  scrolled ? "text-zinc-500 hover:text-[#EF3340]" : "text-white/60 hover:text-white"
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {links.map((link) => {
+              const isActive = scrolled && activeId === link.id;
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`relative text-xs font-medium transition-colors duration-200 pb-0.5 ${
+                    scrolled
+                      ? isActive
+                        ? "text-[#EF3340]"
+                        : "text-zinc-500 hover:text-[#EF3340]"
+                      : "text-white/60 hover:text-white"
+                  }`}
+                >
+                  {link.label}
+                  <span
+                    className={`absolute -bottom-0.5 left-0 right-0 h-[1.5px] rounded-full bg-[#EF3340] transition-all duration-300 ${
+                      isActive ? "opacity-100 scale-x-100" : "opacity-0 scale-x-0"
+                    }`}
+                    style={{ transformOrigin: "left" }}
+                  />
+                </Link>
+              );
+            })}
           </div>
 
           {/* Desktop CTAs */}
@@ -110,6 +153,14 @@ export function Navbar() {
         </div>
       </div>
 
+      {/* Scroll progress bar */}
+      {scrolled && (
+        <div
+          className="absolute bottom-0 left-0 h-[2px] bg-[#EF3340] transition-[width] duration-100 ease-linear"
+          style={{ width: `${progress}%` }}
+        />
+      )}
+
       {/* Mobile menu */}
       {mobileOpen && (
         <div className="lg:hidden border-t border-zinc-200 bg-white">
@@ -119,7 +170,11 @@ export function Navbar() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileOpen(false)}
-                className="block px-3 py-2.5 text-sm text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 rounded-lg transition-colors"
+                className={`block px-3 py-2.5 text-sm rounded-lg transition-colors ${
+                  activeId === link.id
+                    ? "text-[#EF3340] bg-[#EF3340]/5 font-medium"
+                    : "text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50"
+                }`}
               >
                 {link.label}
               </Link>

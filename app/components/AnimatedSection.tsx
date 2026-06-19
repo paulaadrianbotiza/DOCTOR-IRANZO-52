@@ -27,28 +27,36 @@ export function AnimatedSection({
           observer.disconnect();
         }
       },
-      { threshold: 0.08, rootMargin: "0px 0px -30px 0px" }
+      { threshold: 0.07, rootMargin: "0px 0px -40px 0px" }
     );
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
 
-  const hiddenClass =
+  const hiddenStyle: React.CSSProperties =
     direction === "left"
-      ? "opacity-0 translate-x-8"
+      ? { opacity: 0, transform: "translateX(32px)" }
       : direction === "right"
-      ? "opacity-0 -translate-x-8"
+      ? { opacity: 0, transform: "translateX(-32px)" }
       : direction === "none"
-      ? "opacity-0"
-      : "opacity-0 translate-y-8";
+      ? { opacity: 0 }
+      : { opacity: 0, transform: "translateY(28px) scale(0.98)" };
+
+  const visibleStyle: React.CSSProperties = {
+    opacity: 1,
+    transform: "translateY(0) translateX(0) scale(1)",
+  };
 
   return (
     <div
       ref={ref}
-      className={`transition-all duration-700 ease-out ${
-        visible ? "opacity-100 translate-x-0 translate-y-0" : hiddenClass
-      } ${className}`}
-      style={{ transitionDelay: `${delay}ms` }}
+      className={className}
+      style={{
+        ...(visible ? visibleStyle : hiddenStyle),
+        transition: `opacity 0.75s cubic-bezier(0.22,1,0.36,1), transform 0.75s cubic-bezier(0.22,1,0.36,1)`,
+        transitionDelay: `${delay}ms`,
+        willChange: "opacity, transform",
+      }}
     >
       {children}
     </div>
